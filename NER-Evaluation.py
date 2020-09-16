@@ -41,8 +41,8 @@ def get_continuous_chunks(text):
 
 
 # Passing to analyse the article text and chunk with labels
-def label_data():
-    for sent in nltk.sent_tokenize(txtWriting): #for all the words in the text article
+def label_data(txt_writing):
+    for sent in nltk.sent_tokenize(txt_writing): #for all the words in the text article
         for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))): #for all the connected chunks
             if hasattr(chunk, 'label'):
                 if chunk.label() == 'GPE':
@@ -124,26 +124,44 @@ def print_FPR():
     print("F Value is: " + str(calculate_Fvalue(precision, recall)))
 
 
+def read_dat_file(dat_file):
+    lines = dat_file.readlines()
+
+    for line in lines:
+        if line[-1] == '\n':
+            line = line[:-2]  # remove the ) and \n
+        else:
+            line = line[:-1]  # Last line just remove )
+
+        dat_array.append(tuple(part for part in (line.split(' (')) if part))
+
+# Set to your own dataset path with all the dat and txt files in the same folder
 datasetPath = 'C:/Users/LuoKe/OneDrive/Documents/EntireDataset/'
 files = array(os.listdir(datasetPath))
-# for fileCount in range(0,560):
 
 fileCount = 0;
 while True:
-    if fileCount >= 560:
+    if fileCount >= 554:
         break
     currentFile = files[fileCount].split('.')
     if fileCount + 1 <= 560:
         nextFile = files[fileCount + 1].split('.')
     if files[fileCount].endswith('.dat'):
-
-        # Check if next file is dat and if it is consecutive
-        if nextFile[1] == 'dat' and int((currentFile[0])[-1]) == int((nextFile[0])[-1]) + 1:
-            (nextFile[1])[-1]
         if currentFile[0] == nextFile[0] and nextFile[1] == 'txt': # check if the next matching text file matches
-            print(files[fileCount])
+            print("\r\n\r\n------ Processing file: " + currentFile[0] + " ------ \r\n")
             datFile = open(os.path.join(datasetPath, files[fileCount]), 'r', encoding='UTF8')
-            txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r', encoding='UTF8')
+            txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r')
+            txtWriting = txtFile.read()
+
+            read_dat_file(datFile)
+            label_data(txtWriting)
+            ner_evaluation_and_comparison()
+            print_confusion_matrix()
+            print_FPR()
+
+            dat_array.clear()
+            results_array.clear()
+
             fileCount += 2
         else:
             print("SKIPPED " + currentFile[0])
@@ -151,29 +169,13 @@ while True:
 
 
 
-path = 'C:\\Users\\LuoKe\\OneDrive\\Documents\\17985065_1.txt'
-text  = open(path)
-
-txtWriting = open(path, 'r', encoding='UTF8').read()
-
-path2 = 'C:\\Users\\LuoKe\\OneDrive\\Documents\\17985065_1.dat'
-dat  = open(path2)
-
-datWriting = open(path2, 'r', encoding='UTF8').read()
-print('\r\n')
-
-count = 0
-lines = dat.readlines()
-
-for line in lines:
-    if line[-1] == '\n':
-        line = line[:-2] # remove the ) and \n
-    else:
-        line = line[:-1] # Last line just remove )
-
-    dat_array.append(tuple(part for part in (line.split(' (')) if part))
-
-label_data()
-ner_evaluation_and_comparison()
-print_confusion_matrix()
-print_FPR()
+# path = 'C:\\Users\\LuoKe\\OneDrive\\Documents\\17985065_1.txt'
+# text  = open(path)
+#
+# txtWriting = open(path, 'r', encoding='UTF8').read()
+#
+# path2 = 'C:\\Users\\LuoKe\\OneDrive\\Documents\\17985065_1.dat'
+# dat  = open(path2)
+#
+# datWriting = open(path2, 'r', encoding='UTF8').read()
+# print('\r\n')
