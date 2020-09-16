@@ -73,7 +73,7 @@ def ner_evaluation_and_comparison():
             FP += 1
             datLineCount += 1
         else:
-            for x in range(0,5):
+            for x in range(0,3):
                 if (datLineCount + x + 1) > len(dat_array): # stop the loop for checking other lines in dat file if there is no more lines
                     FP += 1
                     break
@@ -149,9 +149,14 @@ while True:
     if files[fileCount].endswith('.dat'):
         if currentFile[0] == nextFile[0] and nextFile[1] == 'txt': # check if the next matching text file matches
             print("\r\n\r\n------ Processing file: " + currentFile[0] + " ------ \r\n")
+
             datFile = open(os.path.join(datasetPath, files[fileCount]), 'r', encoding='UTF8')
-            txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r')
-            txtWriting = txtFile.read()
+            try:
+                txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r', encoding='UTF8')
+                txtWriting = txtFile.read()
+            except UnicodeDecodeError:
+                txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r')
+                txtWriting = txtFile.read()
 
             read_dat_file(datFile)
             label_data(txtWriting)
