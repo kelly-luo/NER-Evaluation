@@ -6,6 +6,7 @@ from numpy import *
 from nltk import ne_chunk, pos_tag, word_tokenize
 from nltk.tree import Tree
 import nltk
+import os
 
 TP = 0
 FN = 0
@@ -112,6 +113,7 @@ def print_confusion_matrix():
                        ['Neg','FN='+ str(FN), 'N/A']])
     print(confusionMatrix)
 
+
 def print_FPR():
     print("------------- FPR Calculations -------------")
     precision = calculate_precision()
@@ -120,6 +122,34 @@ def print_FPR():
     recall = calculate_recall()
     print("Recall is: " + str(recall))
     print("F Value is: " + str(calculate_Fvalue(precision, recall)))
+
+
+datasetPath = 'C:/Users/LuoKe/OneDrive/Documents/EntireDataset/'
+files = array(os.listdir(datasetPath))
+# for fileCount in range(0,560):
+
+fileCount = 0;
+while True:
+    if fileCount >= 560:
+        break
+    currentFile = files[fileCount].split('.')
+    if fileCount + 1 <= 560:
+        nextFile = files[fileCount + 1].split('.')
+    if files[fileCount].endswith('.dat'):
+
+        # Check if next file is dat and if it is consecutive
+        if nextFile[1] == 'dat' and int((currentFile[0])[-1]) == int((nextFile[0])[-1]) + 1:
+            (nextFile[1])[-1]
+        if currentFile[0] == nextFile[0] and nextFile[1] == 'txt': # check if the next matching text file matches
+            print(files[fileCount])
+            datFile = open(os.path.join(datasetPath, files[fileCount]), 'r', encoding='UTF8')
+            txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r', encoding='UTF8')
+            fileCount += 2
+        else:
+            print("SKIPPED " + currentFile[0])
+            fileCount += 2
+
+
 
 path = 'C:\\Users\\LuoKe\\OneDrive\\Documents\\17985065_1.txt'
 text  = open(path)
