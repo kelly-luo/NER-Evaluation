@@ -115,9 +115,10 @@ def calculate_Fvalue(precision, recall):
 
 def print_confusion_matrix():
     print("------------- Confusion Matrix -------------")
-    confusionMatrix = array([[' ','Pos', 'Neg'],
-                       ['Pos','TP='+ str(TP), 'FP='+ str(FP)],
-                       ['Neg','FN='+ str(FN), 'N/A']])
+    confusionMatrix = array([' ', 'Actual Values'],
+                             [' ',str('Pos'), str('Neg')],
+                             [str('Pos'),'TP='+ str(TP), 'FP='+ str(FP)],
+                             [str('Pos'),'FN='+ str(FN), str('Pos')])
     print(confusionMatrix)
 
 
@@ -131,11 +132,9 @@ def print_FPR():
     print("F Value is: " + str(calculate_Fvalue(precision, recall)))
 
 
-def read_dat_file(dat_file):
-    lines = dat_file.readlines()
-
+def read_dat_file(dat_writing):
     count = 0
-    for line in lines:
+    for line in dat_writing:
 
         if line.strip() == '': # if the line is empty
             count += 1
@@ -146,20 +145,14 @@ def read_dat_file(dat_file):
 
         # Remove the empty spaces in start and end, '\n' and '(' character
         l[0] = l[0].strip()
-        l[1] = l[1].strip()
-        l[1] = (l[1])[:-1]
-        if 'GPE' in l[1]:  # Change GPE to LOCATION when storing into dat_array
-            l[1] = 'LOCATION'
 
-        # if line[-1] == '\n':
-        #     line = line[:-2]  # remove the ) and \n
-        #
-        # else:
-        #     line = line[:-1]  # Last line just remove )
-
-        # cleanedLine = '('.join(l)
-        # s = tuple(tuple("".join(line.split()) for i in a) for a in line)
-        # splitLine = tuple(part for part in (cleanedLine.split('(')) if part)
+        try:
+            l[1] = l[1].strip()
+            l[1] = (l[1])[:-1]
+            if 'GPE' in l[1]:  # Change GPE to LOCATION when storing into dat_array
+                l[1] = 'LOCATION'
+        except IndexError: # Missing label
+            continue
 
         dat_array.append(l)
         count += 1
@@ -180,7 +173,13 @@ while True:
         if currentFile[0] == nextFile[0] and nextFile[1] == 'txt': # check if the next matching text file matches
             print("\r\n\r\n------ Processing file: " + currentFile[0] + " ------ \r\n")
 
-            datFile = open(os.path.join(datasetPath, files[fileCount]), 'r', encoding='UTF8')
+            try:
+                datFile = open(os.path.join(datasetPath, files[fileCount]), 'r', encoding='UTF8')
+                datWriting = datFile.readlines()
+            except UnicodeDecodeError:
+                datFile = open(os.path.join(datasetPath, files[fileCount]), 'r')
+                datWriting = datFile.readlines()
+
             try:
                 txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r', encoding='UTF8')
                 txtWriting = txtFile.read()
@@ -188,11 +187,9 @@ while True:
                 txtFile = open(os.path.join(datasetPath, files[fileCount + 1]), 'r')
                 txtWriting = txtFile.read()
 
-            read_dat_file(datFile)
+            read_dat_file(datWriting)
             label_data(txtWriting)
             ner_evaluation_and_comparison()
-            print_confusion_matrix()
-            print_FPR()
 
             dat_array.clear()
             results_array.clear()
@@ -201,3 +198,6 @@ while True:
         else:
             print("SKIPPED " + currentFile[0])
             fileCount += 2
+
+print_confusion_matrix()
+print_FPR()
