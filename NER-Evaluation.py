@@ -59,6 +59,13 @@ def ner_evaluation_and_comparison():
     global TP, FP, FN
     datLineCount = 0
     for entry in results_array:
+
+        try:
+            dat_array[datLineCount]
+        except IndexError: # There are no more lines in the dat file
+            FP += 1
+            continue
+
         if entry[0].lower() == dat_array[datLineCount][0].lower():  # Case 1: Text is the same
             if entry[1] == dat_array[datLineCount][1] or len(entry[1]) == len(dat_array[datLineCount][1]):  # Case 1.1: Labels are the same
                 TP += 1
@@ -127,13 +134,36 @@ def print_FPR():
 def read_dat_file(dat_file):
     lines = dat_file.readlines()
 
+    count = 0
     for line in lines:
-        if line[-1] == '\n':
-            line = line[:-2]  # remove the ) and \n
-        else:
-            line = line[:-1]  # Last line just remove )
 
-        dat_array.append(tuple(part for part in (line.split(' (')) if part))
+        if line.strip() == '': # if the line is empty
+            count += 1
+            print("SKIPPED LINE " + str(count))
+            continue
+
+        l = line.split('(')
+
+        # Remove the empty spaces in start and end, '\n' and '(' character
+        l[0] = l[0].strip()
+        l[1] = l[1].strip()
+        l[1] = (l[1])[:-1]
+        if 'GPE' in l[1]:  # Change GPE to LOCATION when storing into dat_array
+            l[1] = 'LOCATION'
+
+        # if line[-1] == '\n':
+        #     line = line[:-2]  # remove the ) and \n
+        #
+        # else:
+        #     line = line[:-1]  # Last line just remove )
+
+        # cleanedLine = '('.join(l)
+        # s = tuple(tuple("".join(line.split()) for i in a) for a in line)
+        # splitLine = tuple(part for part in (cleanedLine.split('(')) if part)
+
+        dat_array.append(l)
+        count += 1
+        print("LINE " + str(count))
 
 # Set to your own dataset path with all the dat and txt files in the same folder
 datasetPath = 'C:/Users/LuoKe/OneDrive/Documents/EntireDataset/'
@@ -171,16 +201,3 @@ while True:
         else:
             print("SKIPPED " + currentFile[0])
             fileCount += 2
-
-
-
-# path = 'C:\\Users\\LuoKe\\OneDrive\\Documents\\17985065_1.txt'
-# text  = open(path)
-#
-# txtWriting = open(path, 'r', encoding='UTF8').read()
-#
-# path2 = 'C:\\Users\\LuoKe\\OneDrive\\Documents\\17985065_1.dat'
-# dat  = open(path2)
-#
-# datWriting = open(path2, 'r', encoding='UTF8').read()
-# print('\r\n')
