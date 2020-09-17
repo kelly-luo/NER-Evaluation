@@ -1,11 +1,9 @@
 '''
-    COMP700 TEXT AND VISION INTELLIGENCE
-    ASSIGNMENT 1 - NAMED ENTITY RECOGNITION (NER)
-    Kelly Luo (17985065)
+COMP700 TEXT AND VISION INTELLIGENCE
+ASSIGNMENT 1 - NAMED ENTITY RECOGNITION (NER)
+Kelly Luo (17985065)
 '''
 from numpy import *
-from nltk import ne_chunk, pos_tag, word_tokenize
-from nltk.tree import Tree
 import nltk
 import os
 
