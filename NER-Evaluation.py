@@ -188,7 +188,7 @@ def print_confusion_matrix():
 def print_FPR():
     print("\r\n------------- FPR Calculations -------------")
     precision = calculate_precision(TP, FP)
-    print("Overall Precision (P): " + str("{:.2f}".format(precision)))
+    print("Overall Precision (P): " + str("{:.2f}".format(precision)) + "%")
     recall = calculate_recall(TP, FN)
     print("Overall Recall (R): " + str("{:.2f}".format(recall)) + "%")
     print("Overall F Value (F): " + str("{:.2f}".format(calculate_Fvalue(precision, recall))) + "%")
