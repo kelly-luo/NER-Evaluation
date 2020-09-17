@@ -9,14 +9,18 @@ import nltk
 import os
 
 O_TP = 0
+O_FP = 0
 OP_FP = 0
 OL_FP = 0
 
+
 P_TP = 0
+P_FP = 0
 PO_FP = 0
 PL_FP = 0
 
 L_TP = 0
+L_FP = 0
 LO_FP = 0
 LP_FP = 0
 
@@ -146,16 +150,16 @@ def wrong_label_matrix_count(actual_label, pred_label):
             LP_FP += 1
 
 
-def calculate_recall():
-    return (TP/(TP+FN))*100
+def calculate_recall(tp, fn):
+    return "{:.2f}".format((tp / (tp + fn))*100)
 
 
-def calculate_precision():
-    return (TP/(TP+FP))*100
+def calculate_precision(tp, fp):
+    return "{:.2f}".format((tp / (tp + fp))*100)
 
 
 def calculate_Fvalue(precision, recall):
-    return (precision * recall) / (precision + recall)
+    return "{:.2f}".format((precision * recall) / (precision + recall))
 
 
 def print_confusion_matrix():
@@ -172,21 +176,29 @@ def print_confusion_matrix():
                              ['L', str(OL_FP), str(PL_FP) ,str(L_TP)]])
     print(confusionMatrix)
 
+    O_FP = OP_FP + OL_FP
+    P_FP = PO_FP + PL_FP
+    L_FP = LO_FP + LP_FP
     print("\r\nCategory Totals:")
-    print("ORGANISATION ------> TP:" + str(O_TP) + " ---- FP:" + (str(OP_FP + OL_FP)))
-    print("PERSON ------> TP:" + str(P_TP) + " ---- FP:" + (str(PO_FP + PL_FP)))
-    print("LOCATION ------> TP:" + str(L_TP) + " ---- FP:" + (str(LO_FP + LP_FP)))
+    print("ORGANISATION ------> TP:" + str(O_TP) + " ---- FP:" + str(O_FP))
+    print("PERSON ------> TP:" + str(P_TP) + " ---- FP:" + str(P_FP))
+    print("LOCATION ------> TP:" + str(L_TP) + " ---- FP:" + str(L_FP))
 
 
 def print_FPR():
     print("\r\n------------- FPR Calculations -------------")
-    precision = calculate_precision()
-    print("Precision is: " + str(precision))
+    precision = calculate_precision(TP, FP)
+    print("Overall Precision (P): " + str(precision))
+    recall = calculate_recall(TP, FN)
+    print("Overall Recall (R): " + str(recall) + "%")
+    print("Overall F Value (F): " + str(calculate_Fvalue(precision, recall)) + "%")
 
-    recall = calculate_recall()
-    print("Recall is: " + str(recall))
-    print("F Value is: " + str(calculate_Fvalue(precision, recall)))
-
+    # print("\r\nCategory Totals:")
+    # org_prec = calculate_precision(O_TP, O_FP)
+    # org_recall = calculate_recall(O_TP, O_FN)
+    # print("ORGANISATION ------> P:" + str(org_prec) + "% ---- R:" + (str(O_FP)) + "% ---- F:" + (str(OP_FP + OL_FP)) + "%")
+    # print("PERSON ------> TP:" + str(P_TP) + " ---- FP:" + (str(PO_FP + PL_FP)))
+    # print("LOCATION ------> TP:" + str(L_TP) + " ---- FP:" + (str(LO_FP + LP_FP)))
 
 def read_dat_file(dat_writing):
     count = 0
