@@ -70,7 +70,7 @@ def label_data(txt_writing):
 
 
 def ner_evaluation_and_comparison():
-    global TP, FP, FN, O_FN, P_FN, L_FN
+    global TP, FP, FN
     datLineCount = 0
     for entry in results_array:
 
@@ -151,15 +151,15 @@ def wrong_label_matrix_count(actual_label, pred_label):
 
 
 def calculate_recall(tp, fn):
-    return "{:.2f}".format((tp / (tp + fn))*100)
+    return (tp / (tp + fn))*100
 
 
 def calculate_precision(tp, fp):
-    return "{:.2f}".format((tp / (tp + fp))*100)
+    return (tp / (tp + fp))*100
 
 
 def calculate_Fvalue(precision, recall):
-    return "{:.2f}".format((precision * recall) / (precision + recall))
+    return (precision * recall)/(precision + recall)
 
 
 def print_confusion_matrix():
@@ -188,10 +188,10 @@ def print_confusion_matrix():
 def print_FPR():
     print("\r\n------------- FPR Calculations -------------")
     precision = calculate_precision(TP, FP)
-    print("Overall Precision (P): " + str(precision))
+    print("Overall Precision (P): " + str("{:.2f}".format(precision)))
     recall = calculate_recall(TP, FN)
-    print("Overall Recall (R): " + str(recall) + "%")
-    print("Overall F Value (F): " + str(calculate_Fvalue(precision, recall)) + "%")
+    print("Overall Recall (R): " + str("{:.2f}".format(recall)) + "%")
+    print("Overall F Value (F): " + str("{:.2f}".format(calculate_Fvalue(precision, recall))) + "%")
 
     # print("\r\nCategory Totals:")
     # org_prec = calculate_precision(O_TP, O_FP)
@@ -201,12 +201,12 @@ def print_FPR():
     # print("LOCATION ------> TP:" + str(L_TP) + " ---- FP:" + (str(LO_FP + LP_FP)))
 
 def read_dat_file(dat_writing):
-    count = 0
+    # count = 0
     for line in dat_writing:
 
         if line.strip() == '': # if the line is empty
-            count += 1
-            print("---SKIPPED LINE " + str(count))
+            # count += 1
+            # print("---SKIPPED LINE " + str(count))
             continue
 
         l = line.split('(')
@@ -223,8 +223,8 @@ def read_dat_file(dat_writing):
             continue
 
         dat_array.append(l)
-        count += 1
-        print("LINE " + str(count) + " EXTRACTED")
+        # count += 1
+        # print("LINE " + str(count) + " EXTRACTED")
 
 
 # Set to your own dataset path with all the dat and txt files in the same folder
@@ -240,7 +240,7 @@ while True:
         nextFile = files[fileCount + 1].split('.')
     if files[fileCount].endswith('.dat'):
         if currentFile[0] == nextFile[0] and nextFile[1] == 'txt': # check if the next matching text file matches
-            print("\r\n\r\n------ Processing file: " + currentFile[0] + " ------ \r\n")
+            print("------ Processing file: " + currentFile[0] + " ------ \r\n\r\n")
 
             try:
                 datFile = open(os.path.join(datasetPath, files[fileCount]), 'r', encoding='UTF8')
@@ -263,9 +263,6 @@ while True:
             dat_array.clear()
             results_array.clear()
 
-            fileCount += 2
-        else:
-            print("SKIPPED " + currentFile[0])
             fileCount += 2
 
 print_confusion_matrix()
