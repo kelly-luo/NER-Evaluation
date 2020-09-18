@@ -3,6 +3,7 @@ COMP700 TEXT AND VISION INTELLIGENCE
 ASSIGNMENT 1 - NAMED ENTITY RECOGNITION (NER)
 Kelly Luo (17985065)
 '''
+
 from numpy import *
 import nltk
 import os
@@ -173,7 +174,7 @@ def print_confusion_matrix():
     print("\r\n------------- Confusion Matrix -------------")
     confusionMatrix = array([[str('   '), str('Pos'), str('Neg')],
                              ['Pos','TP='+ str(TP), 'FP='+ str(FP)],
-                             ['Pos','FN='+ str(FN), str('Pos')]])
+                             ['Pos','FN='+ str(FN), 'N/A']])
     print(confusionMatrix)
 
     print("\r\n------------- Category Confusion Matrix -------------")
